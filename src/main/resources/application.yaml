@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PASSWORD}
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+
+
+bot:
+  name: ${BOT_NAME}
+  token: ${BOT_TOKEN}
+server:
+  port: ${PORT:5000}
