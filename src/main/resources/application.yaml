@@ -13,5 +13,7 @@ spring:
 bot:
   name: ${BOT_NAME}
   token: ${BOT_TOKEN}
+  attachements-path: attachements
+
 server:
   port: ${PORT:5000}

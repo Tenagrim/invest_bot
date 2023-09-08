@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/chapters")
 @RequiredArgsConstructor
+@CrossOrigin(maxAge = 3600)
 public class ChapterController {
 
     private final ChapterRepository chapterRepository;
