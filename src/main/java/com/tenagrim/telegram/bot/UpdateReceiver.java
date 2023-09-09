@@ -2,6 +2,7 @@ package com.tenagrim.telegram.bot;
 
 import com.tenagrim.telegram.bot.handler.Handler;
 import com.tenagrim.telegram.mappers.MessageMapper;
+import com.tenagrim.telegram.model.BotConfig;
 import com.tenagrim.telegram.model.Chapter;
 import com.tenagrim.telegram.model.Command;
 import com.tenagrim.telegram.repository.ChapterRepository;
@@ -33,7 +34,7 @@ public class UpdateReceiver {
     private final MessageMapper sendMessageMapper;
     private final ChapterRepository chapterRepository;
 
-    public List<PartialBotApiMethod<? extends Serializable>> handle(Update update) {
+    public List<PartialBotApiMethod<? extends Serializable>> handle(Update update, BotConfig botConfig) {
         // try-catch, чтобы при несуществующей команде просто возвращать пустой список
         try {
             // Проверяем, если Update - сообщение с текстом
@@ -53,16 +54,18 @@ public class UpdateReceiver {
 
                 Command command = commandRepository.findByText(message.getText())
                         .orElseThrow(UnsupportedOperationException::new);
-                return List.of(sendMessageMapper.mapSend(command.getChapter(), chatId.toString()));
+                Chapter chapter = chapterRepository.findByItemIdAndDataVersionId(command.getChapterId(), botConfig.getCurrentVersion().getId())
+                        .orElseThrow(UnsupportedOperationException::new);
+                return List.of(sendMessageMapper.mapSend(chapter, chatId.toString()));
 
             } else if (update.hasCallbackQuery()) {
                 List<PartialBotApiMethod<? extends Serializable>> result = new ArrayList<>();
                 final CallbackQuery callbackQuery = update.getCallbackQuery();
                 Long chapterId =  Long.parseLong(callbackQuery.getData()); // TODO validation
                 final Long chatId = callbackQuery.getFrom().getId();
-                Chapter chapter = chapterRepository.findById(chapterId)
+                Chapter chapter = chapterRepository.findByItemIdAndDataVersionId(chapterId, botConfig.getCurrentVersion().getId())
                         .orElseThrow(UnsupportedOperationException::new);
-                if (chapter.getId() == 4L){ // ToDO: switch to typed actions
+                if (chapter.getItemId() == 4L){ // ToDO: switch to typed actions
                     SendMessage sendMessage = new SendMessage();
                     sendMessage.setText(chapter.getText());
                     KeyboardButton button = new KeyboardButton();

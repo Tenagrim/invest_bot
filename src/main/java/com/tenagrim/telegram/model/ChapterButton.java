@@ -2,12 +2,14 @@ package com.tenagrim.telegram.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "CHAPTER_BUTTON")
 @Getter
+@Setter
 public class ChapterButton {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

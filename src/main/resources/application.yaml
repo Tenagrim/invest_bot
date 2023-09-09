@@ -13,6 +13,7 @@ spring:
 bot:
   name: ${BOT_NAME}
   token: ${BOT_TOKEN}
+  sysname: 'INVEST_BOT'
   attachements-path: attachements
 
 server:

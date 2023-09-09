@@ -1,5 +1,6 @@
 package com.tenagrim.telegram.controller;
 
+import com.tenagrim.telegram.dto.ChapterRequest;
 import com.tenagrim.telegram.dto.SaveChaptersRequest;
 import com.tenagrim.telegram.exception.NotFoundException;
 import com.tenagrim.telegram.model.Chapter;
@@ -19,17 +20,18 @@ public class ChapterController {
 
     private final ChapterRepository chapterRepository;
 
-    @GetMapping
-    public List<Chapter> getChapters(){
-        return chapterRepository.findAll();
+    @GetMapping("/{versionId}")
+    public List<Chapter> getChapters(@PathVariable Long versionId){
+        return chapterRepository.findAllByDataVersionId(versionId);
     };
 
-    @GetMapping("/{id}")
-    public Chapter getChapterById(@PathVariable Long id){
-        return chapterRepository.findById(id).orElseThrow(NotFoundException::new);
+    @PostMapping("/get-chapter")
+    public Chapter getChapterById(@RequestBody ChapterRequest request){
+        return chapterRepository.findByItemIdAndDataVersionId(request.getItemId(), request.getVersionId()).
+                orElseThrow(NotFoundException::new);
     };
 
-    @PostMapping
+    @PostMapping("/save-chapters")
     public List<Chapter> saveChapters (@RequestBody SaveChaptersRequest request){
 
         request.getChapters().forEach(c-> c.getChapterButtons().forEach(cb -> cb.setChapter(c)));
@@ -38,8 +40,8 @@ public class ChapterController {
     }
 
     @DeleteMapping
-    public ResponseEntity deleteChapters (@RequestBody List<Long> chapterIds){
-        chapterRepository.deleteAllByIdIn(chapterIds);
+    public ResponseEntity deleteChapters (@RequestBody ChapterRequest request){
+        chapterRepository.deleteByItemIdAndDataVersionId(request.getItemId(), request.getVersionId());
         return ResponseEntity.ok().build();
     }
 

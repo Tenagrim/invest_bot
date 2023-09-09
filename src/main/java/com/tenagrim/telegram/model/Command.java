@@ -14,7 +14,10 @@ public class Command {
     @Column(name = "TEXT")
     String text;
 
-    @OneToOne
-    @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "ID")
-    Chapter chapter;
+//    @OneToOne
+//    @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "ID")
+//    Chapter chapter;
+
+    @Column(name = "CHAPTER_ID")
+    Long chapterId;
 }

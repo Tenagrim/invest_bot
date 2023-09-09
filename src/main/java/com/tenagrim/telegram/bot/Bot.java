@@ -1,5 +1,6 @@
 package com.tenagrim.telegram.bot;
 
+import com.tenagrim.telegram.model.BotConfig;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +25,16 @@ public class Bot extends TelegramLongPollingBot {
     private String botUsername;
     @Value("${bot.token}")
     private String botToken;
+    @Value("${bot.sysname}")
+    private String botSysName;
     private final UpdateReceiver updateReceiver;
+
+    private BotConfig botConfig;
+
 
     @Override
     public void onUpdateReceived(Update update) {
-        List<PartialBotApiMethod<? extends Serializable>> messagesToSend = updateReceiver.handle(update);
+        List<PartialBotApiMethod<? extends Serializable>> messagesToSend = updateReceiver.handle(update, botConfig);
         if (messagesToSend != null && !messagesToSend.isEmpty()) {
             messagesToSend.forEach(this::executeWithExceptionCheck);
         }
@@ -41,5 +47,9 @@ public class Bot extends TelegramLongPollingBot {
             log.error("oops");
             e.printStackTrace();
         }
+    }
+
+    public void setBotConfig(BotConfig botConfig) {
+        this.botConfig = botConfig;
     }
 }

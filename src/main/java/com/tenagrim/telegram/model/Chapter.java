@@ -1,6 +1,11 @@
 package com.tenagrim.telegram.model;
 
+import com.tenagrim.telegram.model.generator.ChapterItemIdGenerator;
+import com.tenagrim.telegram.model.interfaces.IdItemIdHolder;
 import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -8,7 +13,8 @@ import java.util.Set;
 @Entity
 @Table(name = "CHAPTER")
 @Getter
-public class Chapter {
+@Setter // todo: maybe make immutable
+public class Chapter implements IdItemIdHolder {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     Long id;
@@ -33,4 +39,13 @@ public class Chapter {
 
     @Column(name = "CHAPTER_TYPE_ID")
     Long chapterTypeId;
+
+    @Column(name ="DATA_VERSION_ID")
+    Long dataVersionId;
+
+//    @Generated(GenerationTime.INSERT)
+    @GeneratorType(type = ChapterItemIdGenerator.class,
+        when = GenerationTime.INSERT)
+    @Column(name ="ITEM_ID")
+    Long itemId;
 }

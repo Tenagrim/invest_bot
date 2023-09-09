@@ -10,13 +10,7 @@ import java.io.IOException;
 
 @SpringBootApplication
 public class App {
-    public static void main(String[] args) throws IOException {
-//        ApiContextInitializer.init();
+    public static void main(String[] args){
         SpringApplication.run(App.class, args);
-
-        File file = new File("testfile.txt");
-        FileWriter fw = new FileWriter(file);
-        fw.write("--------");
-        fw.close();
     }
 }
