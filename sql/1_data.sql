@@ -6,6 +6,20 @@ insert into bot_config_version(id) values (1);
 insert into data_version(id, bot_config_version_id, note ) values (1, 1,  'Версия 1');
 insert into bot_config(bot_config_version_id, sysname, name, current_version_id) values (1, 'INVEST_BOT', 'Город инвесторов', 1);
 
+insert into chapter_mark(key, bot_config_id, name) values (1, 1,'Гл. меню');
+insert into chapter_mark(key, bot_config_id, name) values (2, 1,'Статический');
+insert into chapter_mark(key, bot_config_id, name) values (3, 1,'Переменный');
+insert into chapter_mark(key, bot_config_id, name) values (4, 1,'Отзыв');
+insert into chapter_mark(key, bot_config_id, name) values (5, 1,'Сделка');
+insert into chapter_mark(key, bot_config_id, name) values (6, 1,'Кейс');
+insert into chapter_mark(key, bot_config_id, name) values (7, 1,'Венчурные');
+insert into chapter_mark(key, bot_config_id, name) values (8, 1,'Внебиржевые');
+insert into chapter_mark(key, bot_config_id, name) values (9, 1,'РФ');
+insert into chapter_mark(key, bot_config_id, name) values (10, 1,'Зарубеж');
+insert into chapter_mark(key, bot_config_id, name) values (11, 1,'Подробно');
+insert into chapter_mark(key, bot_config_id, name) values (12, 1,'О нас');
+insert into chapter_mark(key, bot_config_id, name) values (13, 1,'Спец.');
+
 insert into node_position (id, x, y) VALUES (1,  100, 100);
 insert into node_position (id, x, y) VALUES (2,  200, 100);
 insert into node_position (id, x, y) VALUES (3,  300, 100);

@@ -49,6 +49,13 @@ create table BOT_CONFIG(
        BOT_CONFIG_VERSION_ID bigint references BOT_CONFIG_VERSION(ID)
 );
 
+create table CHAPTER_MARK(
+     ID   bigserial primary key,
+     KEY bigint not null,
+     BOT_CONFIG_ID bigint references BOT_CONFIG(ID),
+     NAME varchar(50)
+);
+
 
 create sequence chapter_id_seq start 1000;
 create sequence chapter_item_id_seq start 1000;
@@ -58,6 +65,7 @@ create table CHAPTER
     ITEM_ID bigint not null default nextval('chapter_item_id_seq'),
     TEXT text,
     NOTE varchar(100),
+    MARKS_KEY bigint not null default 0,
     NODE_POSITION_ID bigint references NODE_POSITION(ID),
     CHAPTER_TYPE_ID bigint references CHAPTER_TYPE(ID),
     DATA_VERSION_ID bigint references DATA_VERSION(ID)

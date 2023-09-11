@@ -29,7 +29,7 @@ public class Chapter implements IdItemIdHolder {
     @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "ID")
     Set<ChapterButton> chapterButtons;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "ID")
     Set<ChapterAttachement> chapterAttachements;
 
@@ -42,6 +42,9 @@ public class Chapter implements IdItemIdHolder {
 
     @Column(name ="DATA_VERSION_ID")
     Long dataVersionId;
+
+    @Column(name = "MARKS_KEY")
+    Long marksKey;
 
 //    @Generated(GenerationTime.INSERT)
     @GeneratorType(type = ChapterItemIdGenerator.class,

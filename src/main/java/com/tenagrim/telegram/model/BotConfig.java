@@ -3,6 +3,7 @@ package com.tenagrim.telegram.model;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -26,6 +27,10 @@ public class BotConfig {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "BOT_CONFIG_VERSION_ID", referencedColumnName = "ID")
     BotConfigVersion botConfigVersion;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "BOT_CONFIG_ID", referencedColumnName = "ID")
+    Set<ChapterMark> chapterMarks;
 
     public void setCurrentVersion(DataVersion currentVersion) {
         this.currentVersion = currentVersion;
