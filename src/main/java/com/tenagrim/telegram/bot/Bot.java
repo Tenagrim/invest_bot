@@ -1,6 +1,9 @@
 package com.tenagrim.telegram.bot;
 
+import com.tenagrim.telegram.exception.NotFoundException;
 import com.tenagrim.telegram.model.BotConfig;
+import com.tenagrim.telegram.repository.BotConfigRepository;
+import com.tenagrim.telegram.service.BotConfigService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +16,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,9 +32,16 @@ public class Bot extends TelegramLongPollingBot {
     @Value("${bot.sysname}")
     private String botSysName;
     private final UpdateReceiver updateReceiver;
+//    private final BotConfigService botConfigService;
+    private final BotConfigRepository botConfigRepository;
 
     private BotConfig botConfig;
 
+    @PostConstruct
+    public void postConstruct(){
+//        this.botConfig = botConfigService.getConfigBySysName(botSysName);
+        this.botConfig = botConfigRepository.findBySysName(botSysName).orElseThrow(NotFoundException::new);
+    }
 
     @Override
     public void onUpdateReceived(Update update) {

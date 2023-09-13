@@ -1,14 +1,14 @@
 package com.tenagrim.telegram.bot;
 
-import com.tenagrim.telegram.bot.handler.Handler;
 import com.tenagrim.telegram.mappers.MessageMapper;
 import com.tenagrim.telegram.model.BotConfig;
 import com.tenagrim.telegram.model.Chapter;
 import com.tenagrim.telegram.model.Command;
+import com.tenagrim.telegram.model.TGUser;
 import com.tenagrim.telegram.repository.ChapterRepository;
 import com.tenagrim.telegram.repository.CommandRepository;
+import com.tenagrim.telegram.service.TGUserService;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.K;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -33,6 +33,7 @@ public class UpdateReceiver {
     private final CommandRepository commandRepository;
     private final MessageMapper sendMessageMapper;
     private final ChapterRepository chapterRepository;
+    private final TGUserService tgUserService;
 
     public List<PartialBotApiMethod<? extends Serializable>> handle(Update update, BotConfig botConfig) {
         // try-catch, чтобы при несуществующей команде просто возвращать пустой список
@@ -41,6 +42,7 @@ public class UpdateReceiver {
             if (isMessageWithContact(update)){
                 final Message message = update.getMessage();
                 final Long chatId = message.getFrom().getId();
+                tgUserService.addContact(message.getFrom(),message.getContact());
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setChatId(chatId.toString());
                 sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
@@ -51,6 +53,7 @@ public class UpdateReceiver {
                 final Message message = update.getMessage();
                 // Получаем айди чата с пользователем
                 final Long chatId = message.getFrom().getId();
+                TGUser user = tgUserService.saveIfNotSaved(message.getFrom());
 
                 Command command = commandRepository.findByText(message.getText())
                         .orElseThrow(UnsupportedOperationException::new);

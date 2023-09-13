@@ -15,6 +15,29 @@ create table Q_USER
     CREATE_DATE timestamp                          default now()
 );
 
+create table TG_USER(
+        ID   bigserial primary key,
+        EXTERNAL_ID bigint not null unique,
+        FIRST_NAME varchar(255),
+        USER_NAME varchar(255),
+        LANGUAGE_CODE varchar(5),
+        IS_BOT boolean
+);
+
+create table CONTACT_TYPE(
+     ID   bigserial primary key,
+     SYSNAME varchar(100),
+     NAME varchar(100)
+);
+
+create table TG_CONTACT(
+       ID   bigserial primary key,
+       CONTACT_TYPE_ID bigint references CONTACT_TYPE(ID),
+       USER_ID bigint references TG_USER(ID),
+       VALUE varchar(255),
+       CREATE_DATE timestamp not null default now()
+);
+
 create sequence node_position_id_seq start 1000;
 create table NODE_POSITION(
       ID   bigint NOT NULL DEFAULT nextval('node_position_id_seq') primary key ,

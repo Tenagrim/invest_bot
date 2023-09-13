@@ -1,6 +1,7 @@
 
 insert into chapter_type(id, sysname, name) values (1, 'BASE', 'Базовый');
 insert into chapter_type(id, sysname, name) values (2, 'DEAL', 'Сделка');
+insert into contact_type(id, sysname, name) values (1, 'MOBILE_PHONE', 'Мобильный телефон');
 
 insert into bot_config_version(id) values (1);
 insert into data_version(id, bot_config_version_id, note ) values (1, 1,  'Версия 1');
