@@ -1,10 +1,10 @@
 package com.tenagrim.telegram.controller;
 
+import com.tenagrim.telegram.controller.base.SecuredRestController;
 import com.tenagrim.telegram.dto.ChapterRequest;
 import com.tenagrim.telegram.dto.SaveChaptersRequest;
 import com.tenagrim.telegram.exception.NotFoundException;
 import com.tenagrim.telegram.model.Chapter;
-import com.tenagrim.telegram.model.ChapterButton;
 import com.tenagrim.telegram.repository.ChapterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,9 @@ import java.util.List;
 @RequestMapping("/chapters")
 @RequiredArgsConstructor
 @CrossOrigin(maxAge = 3600)
-public class ChapterController {
+//@Secured({ "ROLE_VIEWER", "ROLE_EDITOR" })
+//@SecurityRequirement(name = "bearerAuth")
+public class ChapterController implements SecuredRestController {
 
     private final ChapterRepository chapterRepository;
 

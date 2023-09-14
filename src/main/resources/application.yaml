@@ -16,5 +16,10 @@ bot:
   sysname: 'INVEST_BOT'
   attachements-path: attachements
 
+openapi:
+  service:
+    title: 'bot-admin api'
+    version: '1.0.1'
+
 server:
   port: ${PORT:5000}

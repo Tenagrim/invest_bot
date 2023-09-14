@@ -15,6 +15,25 @@ create table Q_USER
     CREATE_DATE timestamp                          default now()
 );
 
+create table APP_USER(
+     ID   bigserial primary key,
+     USERNAME varchar(255) unique,
+     PASSWORD varchar(255),
+     LOCKED boolean default false,
+     ENABLED boolean default false
+);
+
+create table APP_AUTHORITY(
+    ID   bigserial primary key,
+    AUTHORITY varchar(100)
+);
+
+create table APP_USER_AUTHORITY(
+     ID   bigserial primary key,
+     USER_ID bigint references APP_USER(ID),
+     AUTHORITY_ID bigint references APP_AUTHORITY(ID)
+);
+
 create table TG_USER(
         ID   bigserial primary key,
         EXTERNAL_ID bigint not null unique,

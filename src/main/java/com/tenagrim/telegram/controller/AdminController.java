@@ -1,18 +1,18 @@
 package com.tenagrim.telegram.controller;
 
 import com.tenagrim.telegram.bot.Bot;
+import com.tenagrim.telegram.controller.base.SecuredRestController;
 import com.tenagrim.telegram.dto.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class AdminController {
+//@Secured({ "ROLE_VIEWER", "ROLE_EDITOR" })
+//@SecurityRequirement(name = "bearerAuth")
+public class AdminController implements SecuredRestController {
 
 //    private final MessageService messageService;
 
@@ -26,3 +26,4 @@ public class AdminController {
     }
 
 }
+

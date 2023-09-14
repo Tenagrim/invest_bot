@@ -1,5 +1,6 @@
 package com.tenagrim.telegram.controller;
 
+import com.tenagrim.telegram.controller.base.SecuredRestController;
 import com.tenagrim.telegram.dto.BotConfigRequest;
 import com.tenagrim.telegram.dto.SetVersionRequest;
 import com.tenagrim.telegram.model.BotConfig;
@@ -15,7 +16,9 @@ import java.util.List;
 @RequestMapping("/config")
 @RequiredArgsConstructor
 @CrossOrigin(maxAge = 3600)
-public class ConfigController {
+//@Secured({ "ROLE_VIEWER", "ROLE_EDITOR" })
+//@SecurityRequirement(name = "bearerAuth")
+public class ConfigController implements SecuredRestController {
     private final BotConfigService botConfigService;
 
     @PostMapping("/getBySysName")

@@ -1,5 +1,7 @@
 package com.tenagrim.telegram.mappers;
 
+import com.tenagrim.telegram.dto.AppUserView;
+import com.tenagrim.telegram.model.AppUser;
 import com.tenagrim.telegram.model.TGContact;
 import com.tenagrim.telegram.model.TGUser;
 import org.mapstruct.Mapper;
@@ -18,4 +20,6 @@ public abstract class UserMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "value", source = "phoneNumber")
     public abstract TGContact map(Contact contact);
+
+    public abstract AppUserView map(AppUser user);
 }

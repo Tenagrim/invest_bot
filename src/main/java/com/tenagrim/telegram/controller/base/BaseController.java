@@ -1,4 +1,4 @@
-package com.tenagrim.telegram.controller;
+package com.tenagrim.telegram.controller.base;
 
 import org.springframework.stereotype.Controller;
 
