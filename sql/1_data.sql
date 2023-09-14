@@ -3,10 +3,13 @@ insert into app_authority(id, authority) values (2,'ROLE_EDITOR');
 
 insert into app_user(id, locked, enabled, username, password) values (1, false, true, 'tenagrim', '$2y$10$e9FqVd5vAR9lO2nCLmW.DOYo7GG/tZPnDudUM94I5yev84TPqyWMq');
 insert into app_user(id, locked, enabled, username, password) values (2, false, true, 'testuser', '$2a$12$eboOBLlAjW.CDXuu7pOP0e3etl1muzGaXsFbApYdPQux2J14IUdju');
+insert into app_user(id, locked, enabled, username, password) values (3, false, true, 'investbotadmin', '$2a$12$Ew3DZ0lJ2pITE2EIAVzAVOhoM6fJ6jn7KXu88PxwRSzoK.IH6adiG');
 insert into app_user_authority(user_id, authority_id) values (1,1);
 insert into app_user_authority(user_id, authority_id) values (1,2);
 insert into app_user_authority(user_id, authority_id) values (2,1);
 insert into app_user_authority(user_id, authority_id) values (2,2);
+insert into app_user_authority(user_id, authority_id) values (3,1);
+insert into app_user_authority(user_id, authority_id) values (3,2);
 
 
 insert into chapter_type(id, sysname, name) values (1, 'BASE', 'Базовый');
