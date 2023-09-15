@@ -110,7 +110,9 @@ create table CHAPTER
     MARKS_KEY bigint not null default 0,
     NODE_POSITION_ID bigint references NODE_POSITION(ID),
     CHAPTER_TYPE_ID bigint references CHAPTER_TYPE(ID),
-    DATA_VERSION_ID bigint references DATA_VERSION(ID)
+    DATA_VERSION_ID bigint references DATA_VERSION(ID),
+    UPDATE_USER_ID bigint references APP_USER(ID),
+    UPDATE_DATE timestamp not null default now()
 );
 ALTER SEQUENCE chapter_id_seq OWNED BY CHAPTER.ID;
 ALTER SEQUENCE chapter_item_id_seq OWNED BY CHAPTER.ITEM_ID;

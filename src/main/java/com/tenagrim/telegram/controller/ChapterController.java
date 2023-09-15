@@ -3,11 +3,13 @@ package com.tenagrim.telegram.controller;
 import com.tenagrim.telegram.controller.base.SecuredRestController;
 import com.tenagrim.telegram.dto.ChapterRequest;
 import com.tenagrim.telegram.dto.SaveChaptersRequest;
-import com.tenagrim.telegram.exception.NotFoundException;
+import com.tenagrim.telegram.model.AppUser;
 import com.tenagrim.telegram.model.Chapter;
-import com.tenagrim.telegram.repository.ChapterRepository;
+import com.tenagrim.telegram.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,33 +19,30 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin(maxAge = 3600)
 //@Secured({ "ROLE_VIEWER", "ROLE_EDITOR" })
-//@SecurityRequirement(name = "bearerAuth")
 public class ChapterController implements SecuredRestController {
 
-    private final ChapterRepository chapterRepository;
+    private final ChapterService chapterService;
 
     @GetMapping("/{versionId}")
     public List<Chapter> getChapters(@PathVariable Long versionId){
-        return chapterRepository.findAllByDataVersionId(versionId);
+        return chapterService.findAllByDataVersionId(versionId);
     };
 
     @PostMapping("/get-chapter")
     public Chapter getChapterById(@RequestBody ChapterRequest request){
-        return chapterRepository.findByItemIdAndDataVersionId(request.getItemId(), request.getVersionId()).
-                orElseThrow(NotFoundException::new);
+        return chapterService.findByItemIdAndDataVersionId(request.getItemId(), request.getVersionId());
     };
 
     @PostMapping("/save-chapters")
     public List<Chapter> saveChapters (@RequestBody SaveChaptersRequest request){
 
-        request.getChapters().forEach(c-> c.getChapterButtons().forEach(cb -> cb.setChapter(c)));
-
-        return chapterRepository.saveAll(request.getChapters());
+        SecurityContext context = SecurityContextHolder.getContext();
+        return chapterService.saveChapters(request.getChapters(), (AppUser) context.getAuthentication().getPrincipal());
     }
 
     @DeleteMapping
     public ResponseEntity deleteChapters (@RequestBody ChapterRequest request){
-        chapterRepository.deleteByItemIdAndDataVersionId(request.getItemId(), request.getVersionId());
+        chapterService.deleteByItemIdAndDataVersionId(request.getItemId(), request.getVersionId());
         return ResponseEntity.ok().build();
     }
 

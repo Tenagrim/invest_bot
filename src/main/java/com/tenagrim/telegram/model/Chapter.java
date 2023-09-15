@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 @Entity
@@ -51,4 +52,10 @@ public class Chapter implements IdItemIdHolder {
         when = GenerationTime.INSERT)
     @Column(name ="ITEM_ID")
     Long itemId;
+
+    @Column(name = "UPDATE_DATE")
+    ZonedDateTime updateDate;
+
+    @Column(name = "UPDATE_USER_ID")
+    Long updateUserId;
 }
