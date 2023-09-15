@@ -51,13 +51,8 @@ public abstract class MessageMapper {
     private InlineKeyboardButton mapInlineButton(ChapterButton action){
         InlineKeyboardButton result = new InlineKeyboardButton();
         result.setText(action.getText());
-//        if (action.getId() == 4L){
-//            result.
-//        }
-//        KeyboardButton keyboardButton = new KeyboardButton();
-//        keyboardButton.setRequestContact(true);
-
-        result.setCallbackData(action.getTargetChapterId().toString());
+        Long targetChapterId = action.getTargetChapterId() != null? action.getTargetChapterId() : action.getChapter().getItemId();
+        result.setCallbackData(String.valueOf(targetChapterId));
         return result;
     }
 
