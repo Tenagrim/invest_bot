@@ -17,7 +17,7 @@ import static io.jsonwebtoken.security.Keys.secretKeyFor;
 public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key:secretkjjdsufduuewruyu588vhkcxjhdjuuewwekrj}")
     private String secretKey = "secretkjjdsufduuewruyu588vhkcxjhdjuuewwekrj";
-    @Value("${security.jwt.token.expire-length:3600000}")
+    @Value("${security.jwt.token.expire-length:86400000}")
     private long validityInMilliseconds = 86400000; // 24h
 
     private Key getSigningKey() {
