@@ -1,4 +1,4 @@
-package com.tenagrim.telegram.model;
+package com.tenagrim.telegram.model.chapter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -8,20 +8,19 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "NODE_POSITION")
-@Setter // todo: maybe make immutable
-public class NodePosition {
+@Table(name = "CHAPTER_ATTACHEMENT")
+@Setter
+public class ChapterAttachement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "X")
-    Float x;
-
-    @Column(name = "Y")
-    Float y;
+    @Column(name = "FILENAME")
+    String filename;
 
     @JsonIgnore // todo: use dto
-    @OneToOne(mappedBy = "nodePosition")
+    @ManyToOne
+    @JoinColumn(name = "CHAPTER_ID", nullable = false)
     private Chapter chapter;
+
 }

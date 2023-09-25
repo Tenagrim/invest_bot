@@ -1,4 +1,4 @@
-package com.tenagrim.telegram.model;
+package com.tenagrim.telegram.model.chapter;
 
 import com.tenagrim.telegram.model.generator.ChapterItemIdGenerator;
 import com.tenagrim.telegram.model.interfaces.IdItemIdHolder;
@@ -28,7 +28,7 @@ public class Chapter implements IdItemIdHolder {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "ID")
-    Set<ChapterButton> chapterButtons;
+    Set<Paragraph> chapterParagraphs;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "ID")

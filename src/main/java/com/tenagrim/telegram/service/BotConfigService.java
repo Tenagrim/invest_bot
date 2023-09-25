@@ -45,7 +45,7 @@ public class BotConfigService {
         BotConfig config = getConfigBySysName(sysName);
         long maxVersionId = config.getBotConfigVersion().getDataVersions().stream().mapToLong(DataVersion::getId).max().orElse(0L);
         DataVersion newVersion = versionService.createNewVersion(config.getCurrentVersion(), "Версия " + (maxVersionId + 1L));
-        config.setCurrentVersion(newVersion);
+//        config.setCurrentVersion(newVersion);
         BotConfig savedConfig = botConfigRepository.save(config);
         savedConfig.getBotConfigVersion().getDataVersions().add(newVersion);
         botResolver.getBot().setBotConfig(savedConfig);

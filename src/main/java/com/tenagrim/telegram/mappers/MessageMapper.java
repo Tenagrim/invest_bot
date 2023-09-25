@@ -1,43 +1,48 @@
 package com.tenagrim.telegram.mappers;
 
-import com.tenagrim.telegram.model.Chapter;
-import com.tenagrim.telegram.model.ChapterButton;
+import com.tenagrim.telegram.model.chapter.Chapter;
+import com.tenagrim.telegram.model.chapter.ChapterButton;
+import com.tenagrim.telegram.model.chapter.Paragraph;
+import com.tenagrim.telegram.model.chapter.ParagraphButton;
 import org.mapstruct.Mapper;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class MessageMapper {
-    public SendMessage mapSend(Chapter chapter, String chatId){
+    public SendMessage mapSend(Paragraph paragraph, String chatId){
         SendMessage result = new SendMessage();
-        result.setText(chapter.getText());
+        result.setText(paragraph.getText());
         result.setChatId(chatId);
-        result.setReplyMarkup(mapInlineKeyboard(chapter.getChapterButtons()));
+        result.setReplyMarkup(mapInlineKeyboard(paragraph.getParagraphButtons()));
         result.setParseMode("markdown");
         return result;
     }
 
-    public EditMessageText mapEdit(Chapter chapter, String chatId){
+    public EditMessageText mapEdit(Paragraph paragraph, String chatId){
         EditMessageText result = new EditMessageText();
-        result.setText(chapter.getText());
+        result.setText(paragraph.getText());
         result.setChatId(chatId);
-        result.setReplyMarkup(mapInlineKeyboard(chapter.getChapterButtons()));
+        result.setReplyMarkup(mapInlineKeyboard(paragraph.getParagraphButtons()));
         result.setParseMode("markdown");
         return result;
     }
 
-    private InlineKeyboardMarkup mapInlineKeyboard(Set<ChapterButton> chapterButtons){
+    private InlineKeyboardMarkup mapInlineKeyboard(Set<ParagraphButton> chapterButtons){
         List<List<InlineKeyboardButton>> buttons = chapterButtons.stream()
-                .collect(Collectors.groupingBy(ChapterButton::getPlacement))
+                .collect(Collectors.groupingBy(ParagraphButton::getPlacement))
                 .entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey))
                 .map(a->mapInlineButton(a.getValue()))
                 .collect(Collectors.toList());
@@ -45,15 +50,41 @@ public abstract class MessageMapper {
         return result;
     }
 
-    private List<InlineKeyboardButton> mapInlineButton(List<ChapterButton> action){
+    private List<InlineKeyboardButton> mapInlineButton(List<ParagraphButton> action){
         return action.stream().map(this::mapInlineButton).collect(Collectors.toList());
     }
-    private InlineKeyboardButton mapInlineButton(ChapterButton action){
+
+    private InlineKeyboardButton mapInlineButton(ParagraphButton action){
         InlineKeyboardButton result = new InlineKeyboardButton();
         result.setText(action.getText());
-        Long targetChapterId = action.getTargetChapterId() != null? action.getTargetChapterId() : action.getChapter().getItemId();
+        Long targetChapterId = action.getTargetChapterId() != null? action.getTargetChapterId() : action.getParagraph().getChapter().getItemId();
         result.setCallbackData(String.valueOf(targetChapterId));
         return result;
+    }
+
+
+    public List<BotApiMethod<? extends Serializable>> map(Chapter chapter, CallbackQuery callbackQuery){
+        AtomicBoolean firstElement = new AtomicBoolean(false);
+        String chatId = callbackQuery.getFrom().getId().toString();
+        return  chapter.getChapterParagraphs().stream()
+                .sorted((a,b)->b.getPlacement()-a.getPlacement())
+                .map(p->{
+            if(!firstElement.get()){
+                firstElement.set(true);
+                EditMessageText edit = mapEdit(p, chatId);
+                edit.setMessageId(callbackQuery.getMessage().getMessageId());
+                return edit;
+            }
+            return mapSend(p, chatId);
+        }).collect(Collectors.toList());
+    }
+
+    public List<BotApiMethod<? extends Serializable>> map(Chapter chapter, String chatId){
+        return  chapter.getChapterParagraphs().stream()
+                .sorted((a,b)->b.getPlacement()-a.getPlacement())
+                .map(p->{
+                    return mapSend(p, chatId);
+                }).collect(Collectors.toList());
     }
 
 }

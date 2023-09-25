@@ -1,5 +1,6 @@
 package com.tenagrim.telegram.model;
 
+import com.tenagrim.telegram.model.chapter.ChapterMark;
 import lombok.Getter;
 
 import javax.persistence.*;

@@ -2,14 +2,13 @@ package com.tenagrim.telegram.service;
 
 import com.tenagrim.telegram.exception.NotFoundException;
 import com.tenagrim.telegram.model.AppUser;
-import com.tenagrim.telegram.model.Chapter;
+import com.tenagrim.telegram.model.chapter.Chapter;
 import com.tenagrim.telegram.repository.ChapterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,10 @@ public class ChapterService {
     public List<Chapter> saveChapters(List<Chapter> chapters, AppUser principal){
         ZonedDateTime now = ZonedDateTime.now();
         chapters.forEach(c->{
-            c.getChapterButtons().forEach(cb -> cb.setChapter(c));
+            c.getChapterParagraphs().forEach(cp->{
+                cp.setChapter(c);
+                cp.getParagraphButtons().forEach(pb->{pb.setParagraph(cp);});
+            });
             c.setUpdateUserId(principal.getId());
             c.setUpdateDate(now);
         });

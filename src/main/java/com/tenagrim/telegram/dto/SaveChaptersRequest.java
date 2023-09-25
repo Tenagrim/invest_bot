@@ -1,8 +1,7 @@
 package com.tenagrim.telegram.dto;
 
-import com.tenagrim.telegram.model.Chapter;
+import com.tenagrim.telegram.model.chapter.Chapter;
 import lombok.Data;
-import lombok.Getter;
 
 import java.util.List;
 

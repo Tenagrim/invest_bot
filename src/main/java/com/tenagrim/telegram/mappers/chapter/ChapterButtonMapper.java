@@ -1,11 +1,10 @@
 package com.tenagrim.telegram.mappers.chapter;
 
-import com.tenagrim.telegram.model.ChapterButton;
+import com.tenagrim.telegram.model.chapter.ChapterButton;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")

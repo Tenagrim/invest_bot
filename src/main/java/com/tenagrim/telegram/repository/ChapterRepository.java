@@ -1,6 +1,6 @@
 package com.tenagrim.telegram.repository;
 
-import com.tenagrim.telegram.model.Chapter;
+import com.tenagrim.telegram.model.chapter.Chapter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 

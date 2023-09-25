@@ -1,8 +1,6 @@
 package com.tenagrim.telegram.mappers.chapter;
 
-import com.tenagrim.telegram.mappers.chapter.ChapterAttachementMapper;
-import com.tenagrim.telegram.mappers.chapter.ChapterButtonMapper;
-import com.tenagrim.telegram.model.NodePosition;
+import com.tenagrim.telegram.model.chapter.NodePosition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

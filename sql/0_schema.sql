@@ -126,6 +126,23 @@ create table CHAPTER_BUTTON
     PLACEMENT integer default 0
 );
 
+create sequence paragraph_id_seq start 1000;
+create table PARAGRAPH(
+      ID   bigint NOT NULL DEFAULT nextval('paragraph_id_seq') primary key,
+      TEXT text,
+      PLACEMENT integer not null default 0,
+      CHAPTER_ID bigint references CHAPTER (ID)
+);
+ALTER SEQUENCE paragraph_id_seq OWNED BY PARAGRAPH.ID;
+
+create table PARAGRAPH_BUTTON(
+     ID   bigserial primary key,
+     TEXT varchar(50),
+     PARAGRAPH_ID bigint references PARAGRAPH(ID),
+     TARGET_CHAPTER_ID bigint references CHAPTER (ID),
+     PLACEMENT integer default 0
+);
+
 create table CHAPTER_ATTACHEMENT
 (
     ID bigserial primary key,

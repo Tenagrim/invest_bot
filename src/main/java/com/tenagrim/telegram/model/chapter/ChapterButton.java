@@ -1,4 +1,4 @@
-package com.tenagrim.telegram.model;
+package com.tenagrim.telegram.model.chapter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;

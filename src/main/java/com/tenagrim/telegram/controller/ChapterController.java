@@ -4,7 +4,7 @@ import com.tenagrim.telegram.controller.base.SecuredRestController;
 import com.tenagrim.telegram.dto.ChapterRequest;
 import com.tenagrim.telegram.dto.SaveChaptersRequest;
 import com.tenagrim.telegram.model.AppUser;
-import com.tenagrim.telegram.model.Chapter;
+import com.tenagrim.telegram.model.chapter.Chapter;
 import com.tenagrim.telegram.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

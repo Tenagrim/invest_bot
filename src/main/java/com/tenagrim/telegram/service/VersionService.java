@@ -3,7 +3,7 @@ package com.tenagrim.telegram.service;
 import com.tenagrim.telegram.exception.NotFoundException;
 import com.tenagrim.telegram.mappers.DataVersionMapper;
 import com.tenagrim.telegram.mappers.chapter.ChapterMapper;
-import com.tenagrim.telegram.model.Chapter;
+import com.tenagrim.telegram.model.chapter.Chapter;
 import com.tenagrim.telegram.model.DataVersion;
 import com.tenagrim.telegram.repository.ChapterRepository;
 import com.tenagrim.telegram.repository.DataVersionRepository;
@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.NotActiveException;
 import java.util.List;
 
 @Service

@@ -2,7 +2,7 @@ package com.tenagrim.telegram.bot;
 
 import com.tenagrim.telegram.mappers.MessageMapper;
 import com.tenagrim.telegram.model.BotConfig;
-import com.tenagrim.telegram.model.Chapter;
+import com.tenagrim.telegram.model.chapter.Chapter;
 import com.tenagrim.telegram.model.Command;
 import com.tenagrim.telegram.model.TGUser;
 import com.tenagrim.telegram.repository.ChapterRepository;
@@ -10,6 +10,7 @@ import com.tenagrim.telegram.repository.CommandRepository;
 import com.tenagrim.telegram.service.TGUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -35,7 +36,7 @@ public class UpdateReceiver {
     private final ChapterRepository chapterRepository;
     private final TGUserService tgUserService;
 
-    public List<PartialBotApiMethod<? extends Serializable>> handle(Update update, BotConfig botConfig) {
+    public List<BotApiMethod<? extends Serializable>> handle(Update update, BotConfig botConfig) {
         // try-catch, чтобы при несуществующей команде просто возвращать пустой список
         try {
             // Проверяем, если Update - сообщение с текстом
@@ -59,10 +60,10 @@ public class UpdateReceiver {
                         .orElseThrow(UnsupportedOperationException::new);
                 Chapter chapter = chapterRepository.findByItemIdAndDataVersionId(command.getChapterId(), botConfig.getCurrentVersion().getId())
                         .orElseThrow(UnsupportedOperationException::new);
-                return List.of(sendMessageMapper.mapSend(chapter, chatId.toString()));
+                return sendMessageMapper.map(chapter, chatId.toString());
 
             } else if (update.hasCallbackQuery()) {
-                List<PartialBotApiMethod<? extends Serializable>> result = new ArrayList<>();
+                List<BotApiMethod<? extends Serializable>> result = new ArrayList<>();
                 final CallbackQuery callbackQuery = update.getCallbackQuery();
                 Long chapterId =  Long.parseLong(callbackQuery.getData()); // TODO validation
                 final Long chatId = callbackQuery.getFrom().getId();
@@ -79,10 +80,7 @@ public class UpdateReceiver {
                     sendMessage.setChatId(chatId.toString());
                     result.add(sendMessage);
                 }else{
-                    EditMessageText message = sendMessageMapper.mapEdit(chapter, chatId.toString());
-                    message.setMessageId(callbackQuery.getMessage().getMessageId());
-
-                    result.add(message);
+                    result.addAll(sendMessageMapper.map(chapter, callbackQuery));
                 }
 
                 return result;
