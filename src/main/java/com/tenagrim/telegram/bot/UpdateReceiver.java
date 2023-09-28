@@ -70,8 +70,8 @@ public class UpdateReceiver {
                 Chapter chapter = chapterRepository.findByItemIdAndDataVersionId(chapterId, botConfig.getCurrentVersion().getId())
                         .orElseThrow(UnsupportedOperationException::new);
                 if (chapter.getItemId() == 4L){ // ToDO: switch to typed actions
-                    SendMessage sendMessage = new SendMessage();
-                    sendMessage.setText(chapter.getText());
+                    List<BotApiMethod<? extends Serializable>> to_send = sendMessageMapper.map(chapter, chatId.toString());
+                    SendMessage sendMessage = (SendMessage) to_send.get(0);
                     KeyboardButton button = new KeyboardButton();
                     button.setRequestContact(true);
                     button.setText("Отравить контакт");
