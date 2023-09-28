@@ -2,7 +2,7 @@ package com.tenagrim.telegram.controller;
 
 import com.tenagrim.telegram.controller.base.SecuredRestController;
 import com.tenagrim.telegram.dto.BotConfigRequest;
-import com.tenagrim.telegram.dto.SetVersionRequest;
+import com.tenagrim.telegram.dto.VersionRequest;
 import com.tenagrim.telegram.model.BotConfig;
 import com.tenagrim.telegram.model.DataVersion;
 import com.tenagrim.telegram.service.BotConfigService;
@@ -36,8 +36,13 @@ public class ConfigController implements SecuredRestController {
         return botConfigService.createNewVersionFromCurrent(request.getSysName());
     }
 
+    @PostMapping("/createVersionFromTarget")
+    DataVersion createVersionFromCurrent(@RequestBody @Valid VersionRequest request){
+        return botConfigService.createNewVersionFromTarget(request.getSysName(), request.getTargetVersionId());
+    }
+
     @PostMapping("/setCurrentVersion")
-    BotConfig setCurrentVersion(@RequestBody @Valid SetVersionRequest request){
+    BotConfig setCurrentVersion(@RequestBody @Valid VersionRequest request){
         return botConfigService.setCurrentVersion(request.getSysName(), request.getTargetVersionId());
     }
 

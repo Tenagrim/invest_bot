@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SetVersionRequest extends BotConfigRequest{
+public class VersionRequest extends BotConfigRequest{
     Long targetVersionId;
 }
 

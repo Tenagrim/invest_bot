@@ -43,12 +43,22 @@ public class BotConfigService {
     @Transactional
     public BotConfig createNewVersionFromCurrent(String sysName){
         BotConfig config = getConfigBySysName(sysName);
+        createNewVersion(config, config.getCurrentVersion());
+        return config;
+    }
+
+    public DataVersion createNewVersionFromTarget(String sysName, Long targetVersionId){
+        BotConfig config = getConfigBySysName(sysName);
+        DataVersion baseVersion = versionService.getVersionById(targetVersionId);
+        return createNewVersion(config, baseVersion);
+    }
+
+    private DataVersion createNewVersion(BotConfig config, DataVersion baseVersion){
         long maxVersionId = config.getBotConfigVersion().getDataVersions().stream().mapToLong(DataVersion::getId).max().orElse(0L);
-        DataVersion newVersion = versionService.createNewVersion(config.getCurrentVersion(), "Версия " + (maxVersionId + 1L));
-//        config.setCurrentVersion(newVersion);
+        DataVersion newVersion = versionService.createNewVersion(baseVersion, "Версия " + (maxVersionId + 1L));
         BotConfig savedConfig = botConfigRepository.save(config);
         savedConfig.getBotConfigVersion().getDataVersions().add(newVersion);
         botResolver.getBot().setBotConfig(savedConfig);
-        return savedConfig;
+        return newVersion;
     }
 }
