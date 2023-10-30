@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {
         ChapterButtonMapper.class,
-        ChapterAttachementMapper.class,
+        AttachementMapper.class,
         NodePositionMapper.class,
         ParagraphMapper.class
 })
@@ -18,7 +18,7 @@ public abstract class ChapterMapper {
 
     @Mapping(target = "id", ignore = true)
 //    @Mapping(target = "chapterButtons", qualifiedByName = "mapChapterButtons")
-    @Mapping(target = "chapterAttachements", qualifiedByName = "mapChapterAttachements")
+    @Mapping(target = "attachments", qualifiedByName = "mapChapterAttachements")
     @Mapping(target = "chapterParagraphs", qualifiedByName = "mapChapterParagraphs")
     abstract Chapter mapInternal(Chapter chapter);
     public Chapter map(Chapter chapter){
@@ -27,7 +27,7 @@ public abstract class ChapterMapper {
             result.getNodePosition().setChapter(result);
         }
 //        result.getChapterButtons().forEach(c->c.setChapter(result));
-        result.getChapterAttachements().forEach(c->c.setChapter(result));
+        result.getAttachments().forEach(c->c.setChapter(result));
         result.getChapterParagraphs().forEach(p->p.setChapter(result));
         return result;
     }

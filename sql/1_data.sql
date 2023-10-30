@@ -17,8 +17,12 @@ INSERT INTO BOT_CONFIG_PROPERTIES(ID, SYSNAME, DESCRIPTION) values (1, 'chapter_
 insert into chapter_type(id, sysname, name) values (1, 'BASE', 'Базовый');
 insert into chapter_type(id, sysname, name) values (2, 'DEAL', 'Сделка');
 insert into contact_type(id, sysname, name) values (1, 'MOBILE_PHONE', 'Мобильный телефон');
-insert into paragraph_type(id, sysname) values (1, 'PLAIN');
-insert into keyboard_type(id, sysname) values (1, 'INLINE');
+insert into paragraph_type(id, sysname, description) values (1, 'TEXT', 'text');
+insert into paragraph_type(id, sysname, description) values (2, 'DOCUMENT', 'document');
+insert into attachment_type(id, sysname, description) values (1, 'IMAGE', 'image');
+insert into attachment_type(id, sysname, description) values (2, 'DOCUMENT', 'document');
+insert into keyboard_type(id, sysname, description) values (1, 'INLINE', 'inline');
+insert into keyboard_type(id, sysname, description) values (2, 'STATIC', 'static');
 
 insert into bot_config_version(id) values (1);
 insert into data_version(id, bot_config_version_id, note ) values (1, 1,  'Версия 1');

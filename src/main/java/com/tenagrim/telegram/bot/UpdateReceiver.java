@@ -11,7 +11,9 @@ import com.tenagrim.telegram.service.TGUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -34,7 +36,7 @@ public class UpdateReceiver {
     private final ChapterRepository chapterRepository;
     private final TGUserService tgUserService;
 
-    public List<BotApiMethod<? extends Serializable>> handle(Update update, BotConfig botConfig) {
+    public List<PartialBotApiMethod<? extends Serializable>> handle(Update update, BotConfig botConfig) {
         // try-catch, чтобы при несуществующей команде просто возвращать пустой список
         try {
             // Проверяем, если Update - сообщение с текстом
@@ -42,11 +44,7 @@ public class UpdateReceiver {
                 final Message message = update.getMessage();
                 final Long chatId = message.getFrom().getId();
                 tgUserService.addContact(message.getFrom(), message.getContact());
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.setChatId(chatId.toString());
-                sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
-                sendMessage.setText("Спасибо за ваш контакт! В ближайшее время с Вами свяжется один из наших менеджеров (https://gi-agency.ru/tg-bot-thanks) \uD83D\uDC48");
-                return List.of(sendMessage);
+                return List.of(getContactReply(chatId.toString()));
             } else if (isMessageWithText(update)) {
                 // Получаем Message из Update
                 final Message message = update.getMessage();
@@ -61,14 +59,14 @@ public class UpdateReceiver {
                 return sendMessageMapper.map(chapter, chatId.toString());
 
             } else if (update.hasCallbackQuery()) {
-                List<BotApiMethod<? extends Serializable>> result = new ArrayList<>();
+                List<PartialBotApiMethod<? extends Serializable>> result = new ArrayList<>();
                 final CallbackQuery callbackQuery = update.getCallbackQuery();
                 Long chapterId =  Long.parseLong(callbackQuery.getData()); // TODO validation
                 final Long chatId = callbackQuery.getFrom().getId();
                 Chapter chapter = chapterRepository.findByItemIdAndDataVersionId(chapterId, botConfig.getCurrentVersion().getId())
                         .orElseThrow(UnsupportedOperationException::new);
                 if (chapter.getItemId() == 4L){ // ToDO: switch to typed actions
-                    List<BotApiMethod<? extends Serializable>> to_send = sendMessageMapper.map(chapter, chatId.toString());
+                    List<PartialBotApiMethod<? extends Serializable>> to_send = sendMessageMapper.map(chapter, chatId.toString());
                     SendMessage sendMessage = (SendMessage) to_send.get(0);
                     KeyboardButton button = new KeyboardButton();
                     button.setRequestContact(true);
@@ -95,6 +93,16 @@ public class UpdateReceiver {
 
     private boolean isMessageWithContact(Update update) {
         return !update.hasCallbackQuery() && update.hasMessage() && update.getMessage().hasContact();
+    }
+
+
+    private SendMessage getContactReply(String chatId){
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
+        sendMessage.setText("Спасибо за ваш контакт! В ближайшее время с Вами свяжется один из наших [менеджеров](https://gi-agency.ru/tg-bot-thanks) \uD83D\uDC48");
+        sendMessage.setParseMode("markdown");
+        return sendMessage;
     }
 
 }

@@ -8,9 +8,9 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "CHAPTER_ATTACHEMENT")
+@Table(name = "ATTACHMENT")
 @Setter
-public class ChapterAttachement {
+public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

@@ -141,12 +141,14 @@ create table CHAPTER_BUTTON
 
 create table PARAGRAPH_TYPE(
    ID   bigserial primary key,
-   SYSNAME varchar(50)
+   SYSNAME varchar(50),
+   DESCRIPTION varchar(100)
 );
 
 create table KEYBOARD_TYPE(
   ID   bigserial primary key,
-  SYSNAME varchar(50)
+  SYSNAME varchar(50),
+  DESCRIPTION varchar(100)
 );
 
 create sequence paragraph_id_seq start 1000;
@@ -171,11 +173,18 @@ create table PARAGRAPH_BUTTON(
      PLACEMENT integer default 0
 );
 
-create table CHAPTER_ATTACHEMENT
+create table ATTACHMENT_TYPE(
+   ID bigserial primary key,
+   SYSNAME varchar(50),
+   DESCRIPTION varchar(100)
+);
+
+create table ATTACHMENT
 (
     ID bigserial primary key,
     CHAPTER_ID bigint references CHAPTER (ID),
-    FILENAME varchar(100)
+    ATTACHMENT_TYPE_ID bigint references ATTACHMENT_TYPE(ID),
+    FILENAME varchar(250)
 );
 
 create table COMMAND(

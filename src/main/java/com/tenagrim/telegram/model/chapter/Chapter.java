@@ -1,5 +1,6 @@
 package com.tenagrim.telegram.model.chapter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tenagrim.telegram.model.generator.ChapterItemIdGenerator;
 import com.tenagrim.telegram.model.interfaces.IdItemIdHolder;
 import lombok.Getter;
@@ -30,9 +31,10 @@ public class Chapter implements IdItemIdHolder {
     @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "ID")
     Set<Paragraph> chapterParagraphs;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore /// TODO temorarly disabled for save
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "ID")
-    Set<ChapterAttachement> chapterAttachements;
+    Set<Attachment> attachments;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, orphanRemoval = true)
     @JoinColumn(name = "NODE_POSITION_ID", referencedColumnName = "ID")

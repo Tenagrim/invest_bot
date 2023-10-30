@@ -8,7 +8,10 @@ import org.mapstruct.Named;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = {ParagraphButtonMapper.class})
+@Mapper(componentModel = "spring", uses = {
+        ParagraphButtonMapper.class,
+        AttachementMapper.class
+})
 public abstract class ParagraphMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "paragraphButtons", qualifiedByName = "mapParagraphButtons")
@@ -16,6 +19,7 @@ public abstract class ParagraphMapper {
 
     public Paragraph map (Paragraph paragraph){
         Paragraph result = mapInternal(paragraph);
+        result.getParagraphButtons().forEach(b-> b.setParagraph(result));
         result.getParagraphButtons().forEach(b-> b.setParagraph(result));
         return result;
     }
