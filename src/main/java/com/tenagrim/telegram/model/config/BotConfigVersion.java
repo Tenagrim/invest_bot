@@ -1,6 +1,7 @@
-package com.tenagrim.telegram.model;
+package com.tenagrim.telegram.model.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tenagrim.telegram.model.DataVersion;
 import lombok.Getter;
 
 import javax.persistence.*;

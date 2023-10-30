@@ -1,7 +1,7 @@
 package com.tenagrim.telegram.bot;
 
 import com.tenagrim.telegram.mappers.MessageMapper;
-import com.tenagrim.telegram.model.BotConfig;
+import com.tenagrim.telegram.model.config.BotConfig;
 import com.tenagrim.telegram.model.chapter.Chapter;
 import com.tenagrim.telegram.model.Command;
 import com.tenagrim.telegram.model.TGUser;
@@ -11,9 +11,7 @@ import com.tenagrim.telegram.service.TGUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -43,11 +41,11 @@ public class UpdateReceiver {
             if (isMessageWithContact(update)){
                 final Message message = update.getMessage();
                 final Long chatId = message.getFrom().getId();
-                tgUserService.addContact(message.getFrom(),message.getContact());
+                tgUserService.addContact(message.getFrom(), message.getContact());
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setChatId(chatId.toString());
                 sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
-                sendMessage.setText("Спасибо, ваш номер отправлен менеджеру");
+                sendMessage.setText("Спасибо за ваш контакт! В ближайшее время с Вами свяжется один из наших менеджеров (https://gi-agency.ru/tg-bot-thanks) \uD83D\uDC48");
                 return List.of(sendMessage);
             } else if (isMessageWithText(update)) {
                 // Получаем Message из Update
@@ -80,7 +78,7 @@ public class UpdateReceiver {
                     sendMessage.setChatId(chatId.toString());
                     result.add(sendMessage);
                 }else{
-                    result.addAll(sendMessageMapper.map(chapter, callbackQuery));
+                    result.addAll(sendMessageMapper.map(chapter, callbackQuery, botConfig.getBotConfigProperties()));
                 }
 
                 return result;

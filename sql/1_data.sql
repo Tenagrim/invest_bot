@@ -11,14 +11,19 @@ insert into app_user_authority(user_id, authority_id) values (2,2);
 insert into app_user_authority(user_id, authority_id) values (3,1);
 insert into app_user_authority(user_id, authority_id) values (3,2);
 
+INSERT INTO BOT_CONFIG_PROPERTIES(ID, SYSNAME, DESCRIPTION) values (1, 'chapter_sequence', 'Разделы в чате располагаются последовательно');
+
 
 insert into chapter_type(id, sysname, name) values (1, 'BASE', 'Базовый');
 insert into chapter_type(id, sysname, name) values (2, 'DEAL', 'Сделка');
 insert into contact_type(id, sysname, name) values (1, 'MOBILE_PHONE', 'Мобильный телефон');
+insert into paragraph_type(id, sysname) values (1, 'PLAIN');
+insert into keyboard_type(id, sysname) values (1, 'INLINE');
 
 insert into bot_config_version(id) values (1);
 insert into data_version(id, bot_config_version_id, note ) values (1, 1,  'Версия 1');
-insert into bot_config(bot_config_version_id, sysname, name, current_version_id) values (1, 'INVEST_BOT', 'Город инвесторов', 1);
+insert into bot_config(id, bot_config_version_id, sysname, name, current_version_id) values (1, 1, 'INVEST_BOT', 'Город инвесторов', 1);
+insert into bot_config_properties_values(bot_config_id,  property_id, value) values (1, 1, 'true');
 
 insert into chapter_mark(key, bot_config_id, name) values (1, 1,'Гл. меню');
 insert into chapter_mark(key, bot_config_id, name) values (2, 1,'Статический');

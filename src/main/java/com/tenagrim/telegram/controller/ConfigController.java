@@ -3,7 +3,7 @@ package com.tenagrim.telegram.controller;
 import com.tenagrim.telegram.controller.base.SecuredRestController;
 import com.tenagrim.telegram.dto.BotConfigRequest;
 import com.tenagrim.telegram.dto.VersionRequest;
-import com.tenagrim.telegram.model.BotConfig;
+import com.tenagrim.telegram.model.config.BotConfig;
 import com.tenagrim.telegram.model.DataVersion;
 import com.tenagrim.telegram.service.BotConfigService;
 import lombok.RequiredArgsConstructor;

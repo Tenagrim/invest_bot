@@ -1,6 +1,6 @@
 package com.tenagrim.telegram.repository;
 
-import com.tenagrim.telegram.model.BotConfig;
+import com.tenagrim.telegram.model.config.BotConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

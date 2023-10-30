@@ -1,9 +1,9 @@
 package com.tenagrim.telegram.bot;
 
 import com.tenagrim.telegram.exception.NotFoundException;
-import com.tenagrim.telegram.model.BotConfig;
+import com.tenagrim.telegram.model.config.BotConfig;
+import com.tenagrim.telegram.model.config.BotConfigPropertyValue;
 import com.tenagrim.telegram.repository.BotConfigRepository;
-import com.tenagrim.telegram.service.BotConfigService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,13 +12,15 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -55,8 +57,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             sendApiMethod((BotApiMethod<? extends Serializable>) sendMessage);
         } catch (TelegramApiException e) {
-            log.error("oops");
-            e.printStackTrace();
+            log.error("oops", e);
         }
     }
 

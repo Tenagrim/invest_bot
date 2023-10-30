@@ -1,7 +1,7 @@
 package com.tenagrim.telegram.service;
 
 import com.tenagrim.telegram.exception.NotFoundException;
-import com.tenagrim.telegram.model.BotConfig;
+import com.tenagrim.telegram.model.config.BotConfig;
 import com.tenagrim.telegram.model.DataVersion;
 import com.tenagrim.telegram.repository.BotConfigRepository;
 import lombok.RequiredArgsConstructor;

@@ -91,6 +91,19 @@ create table BOT_CONFIG(
        BOT_CONFIG_VERSION_ID bigint references BOT_CONFIG_VERSION(ID)
 );
 
+create table BOT_CONFIG_PROPERTIES(
+    ID bigserial primary key,
+    SYSNAME varchar(100),
+    DESCRIPTION varchar(255)
+);
+
+create table BOT_CONFIG_PROPERTIES_VALUES(
+     ID bigserial primary key,
+     BOT_CONFIG_ID bigint references BOT_CONFIG(ID),
+     PROPERTY_ID bigint references BOT_CONFIG_PROPERTIES(ID),
+     VALUE varchar(100)
+);
+
 create table CHAPTER_MARK(
      ID   bigserial primary key,
      KEY bigint not null,
@@ -126,14 +139,29 @@ create table CHAPTER_BUTTON
     PLACEMENT integer default 0
 );
 
+create table PARAGRAPH_TYPE(
+   ID   bigserial primary key,
+   SYSNAME varchar(50)
+);
+
+create table KEYBOARD_TYPE(
+  ID   bigserial primary key,
+  SYSNAME varchar(50)
+);
+
 create sequence paragraph_id_seq start 1000;
 create table PARAGRAPH(
       ID   bigint NOT NULL DEFAULT nextval('paragraph_id_seq') primary key,
       TEXT text,
       PLACEMENT integer not null default 0,
-      CHAPTER_ID bigint references CHAPTER (ID)
+      CHAPTER_ID bigint references CHAPTER (ID),
+      PARAGRAPH_TYPE_ID bigint references PARAGRAPH_TYPE (ID) not null default 1,
+      KEYBOARD_TYPE_ID bigint references PARAGRAPH_TYPE (ID) not null default 1
 );
 ALTER SEQUENCE paragraph_id_seq OWNED BY PARAGRAPH.ID;
+
+alter table PARAGRAPH add column PARAGRAPH_TYPE_ID bigint references PARAGRAPH_TYPE (ID);
+-- alter table PARAGRAPH add column KEYBOARD_TYPE_ID bigint references PARAGRAPH_TYPE (ID);
 
 create table PARAGRAPH_BUTTON(
      ID   bigserial primary key,

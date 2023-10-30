@@ -13,10 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.io.Serializable;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -62,14 +59,18 @@ public abstract class MessageMapper {
         return result;
     }
 
-
     public List<BotApiMethod<? extends Serializable>> map(Chapter chapter, CallbackQuery callbackQuery){
+        return map(chapter, callbackQuery, Collections.emptyMap());
+    }
+
+    public List<BotApiMethod<? extends Serializable>> map(Chapter chapter, CallbackQuery callbackQuery, Map<String, Object> mapProperties){
         AtomicBoolean firstElement = new AtomicBoolean(false);
         String chatId = callbackQuery.getFrom().getId().toString();
         return  chapter.getChapterParagraphs().stream()
                 .sorted((a,b)->b.getPlacement()-a.getPlacement())
                 .map(p->{
-            if(!firstElement.get()){
+            if(!mapProperties.get("chapter_sequence").equals("true") && // TODO sysname to enum, make values typed
+                    !firstElement.get()){
                 firstElement.set(true);
                 EditMessageText edit = mapEdit(p, chatId);
                 edit.setMessageId(callbackQuery.getMessage().getMessageId());
