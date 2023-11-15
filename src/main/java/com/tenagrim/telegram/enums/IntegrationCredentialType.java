@@ -11,7 +11,8 @@ public enum IntegrationCredentialType {
     API_URL(3L, "API_URL", ""),
     CLIENT_ID(4L, "CLIENT_ID", ""),
     CLIENT_SECRET(5L, "CLIENT_SECRET", ""),
-    REDIRECT_URI(6L, "REDIRECT_URI", "");
+    REDIRECT_URI(6L, "REDIRECT_URI", ""),
+    UTM_SOURCE_FIELD_ID(7L, "UTM_SOURCE_FIELD_ID", "");
 
     private final Long id;
     private final String sysName;

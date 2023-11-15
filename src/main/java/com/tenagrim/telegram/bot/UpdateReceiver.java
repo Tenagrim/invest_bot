@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -52,13 +53,23 @@ public class UpdateReceiver {
                 final Message message = update.getMessage();
                 // Получаем айди чата с пользователем
                 final Long chatId = message.getFrom().getId();
-                TGUser user = tgUserService.saveIfNotSaved(message.getFrom());
 
-                Command command = commandRepository.findByText(message.getText())
-                        .orElseThrow(UnsupportedOperationException::new);
-                Chapter chapter = chapterRepository.findByItemIdAndDataVersionId(command.getChapterId(), botConfig.getCurrentVersion().getId())
-                        .orElseThrow(UnsupportedOperationException::new);
-                return sendMessageMapper.map(chapter, chatId.toString());
+                if (message.isCommand()) {
+
+                    MessageEntity botCommand = message.getEntities().stream()
+                            .filter(ent->ent.getType().equals("bot_command"))
+                            .findFirst().orElseThrow(UnsupportedOperationException::new);
+
+                    String commandArg = getCommandArg(botCommand.getText(), message.getText());
+
+                    TGUser user = tgUserService.saveIfNotSaved(message.getFrom(), commandArg);
+
+                    Command command = commandRepository.findByText(botCommand.getText())
+                            .orElseThrow(UnsupportedOperationException::new);
+                    Chapter chapter = chapterRepository.findByItemIdAndDataVersionId(command.getChapterId(), botConfig.getCurrentVersion().getId())
+                            .orElseThrow(UnsupportedOperationException::new);
+                    return sendMessageMapper.map(chapter, chatId.toString());
+                }
 
             } else if (update.hasCallbackQuery()) {
                 List<PartialBotApiMethod<? extends Serializable>> result = new ArrayList<>();
@@ -108,6 +119,14 @@ public class UpdateReceiver {
         sendMessage.setText("Спасибо за ваш контакт! В ближайшее время с Вами свяжется один из наших [менеджеров](https://gi-agency.ru/tg-bot-thanks) \uD83D\uDC48");
         sendMessage.setParseMode("markdown");
         return sendMessage;
+    }
+
+    private String getCommandArg(String command, String message){
+        if (command.length() != message.length()){
+            String result = message.substring(command.length() + 1);
+            return  (result.length() > 255) ? null : result; // TODO move limit to constants
+        }
+        return null;
     }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+import javax.print.attribute.standard.OrientationRequested;
 import java.util.Optional;
 
 @Service
@@ -24,8 +25,12 @@ public class TGUserService {
     }
 
     public TGUser saveIfNotSaved(User user){
+        return saveIfNotSaved(user, null);
+    }
+
+    public TGUser saveIfNotSaved(User user, String startArg){
         Optional<TGUser> tgUser = userRepository.findByExternalId(user.getId());
-        return tgUser.orElseGet(() -> saveUser(user));
+        return tgUser.orElseGet(() -> saveUser(user, startArg));
     }
 
     public TGUser addContact(User user, Contact contact){
@@ -36,8 +41,9 @@ public class TGUserService {
         return userRepository.save(tgUser);
     }
 
-    public TGUser saveUser(User user){
+    public TGUser saveUser(User user, String startArg){
         TGUser tgUser = userMapper.map(user);
+        tgUser.setStartArg(startArg);
         return userRepository.save(tgUser);
     }
 }

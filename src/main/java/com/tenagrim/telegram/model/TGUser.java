@@ -24,6 +24,8 @@ public class TGUser {
     String languageCode;
     @Column(name = "IS_BOT")
     Boolean isBot;
+    @Column(name = "START_ARG")
+    String startArg;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     Set<TGContact> contacts;

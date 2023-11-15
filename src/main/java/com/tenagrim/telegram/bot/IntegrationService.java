@@ -5,6 +5,7 @@ import com.tenagrim.telegram.dto.integration.amocrm.auth.AccessTokenResponse;
 import com.tenagrim.telegram.dto.integration.amocrm.auth.RefreshAccessTokenRequest;
 import com.tenagrim.telegram.enums.AmoCrmGrantType;
 import com.tenagrim.telegram.exception.NotFoundException;
+import com.tenagrim.telegram.model.TGUser;
 import com.tenagrim.telegram.model.chapter.Chapter;
 import com.tenagrim.telegram.model.config.BotConfig;
 import com.tenagrim.telegram.model.integration.Integration;
@@ -13,6 +14,7 @@ import com.tenagrim.telegram.model.integration.IntegrationTrigger;
 import com.tenagrim.telegram.repository.BotConfigRepository;
 import com.tenagrim.telegram.repository.ChapterRepository;
 import com.tenagrim.telegram.repository.IntegrationQueueRepository;
+import com.tenagrim.telegram.repository.TGUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -25,8 +27,10 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import reactor.core.publisher.Mono;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static com.tenagrim.telegram.enums.IntegrationCredentialType.*;
@@ -41,6 +45,7 @@ public class IntegrationService {
     private final IntegrationQueueRepository queueRepository;
     private final ChapterRepository chapterRepository;
     private final BotConfigRepository botConfigRepository;
+    private final TGUserRepository tgUserRepository;
 
     public void pushRecords(BotConfig botConfig, Chapter chapter, Long userId) {
         for (IntegrationTrigger t : chapter.getIntegrationTriggers()) {
@@ -72,9 +77,18 @@ public class IntegrationService {
     private void sendToAmo(BotConfig botConfig, Integration amoIntegration, IntegrationQueueRecord record, User user, Contact contact) {
         // TODO save name in queue
         Chapter forwardedChapter = chapterRepository.findByItemIdAndDataVersionId(record.getChapterId(), botConfig.getCurrentVersion().getId()).orElseThrow();
+        Optional<TGUser> tgUser = tgUserRepository.findByExternalId(record.getUserId());
 
         AddLeadComplex addLeadComplex = AddLeadComplex.builder()
                 .name(forwardedChapter.getNote())
+                .customFieldValues((tgUser.isPresent() && tgUser.get().getStartArg() != null) ?
+                        List.of(MainCustomFieldValue.builder()
+                                .fieldId(Integer.valueOf(amoIntegration.getCredential(UTM_SOURCE_FIELD_ID.getSysName())))
+                                .values(List.of(CustomFieldValue.builder()
+                                        .value(tgUser.get().getStartArg())
+                                        .build()))
+                                .build()) :
+                        null)
                 .embedded(LeadEmbedded.builder()
                         .contacts(List.of(com.tenagrim.telegram.dto.integration.amocrm.Contact.builder()
                                 .firstName(String.format("%s %s %s", contact.getFirstName(), contact.getLastName(), user.getUserName()))
@@ -90,12 +104,16 @@ public class IntegrationService {
                 .build();
 
         sendLead(addLeadComplex, amoIntegration,
-                System.out::println,
+                success->{
+                    System.out.println(success);
+                },
                 failure -> {
                     if (failure instanceof WebClientResponseException.Unauthorized) {
                         refreshAmoToken(botConfig, amoIntegration);
                         System.out.println("AMOCRM TOKEN REFRESHED SUCCESSFULLY");
                         sendLead(addLeadComplex, amoIntegration, System.out::println, System.out::println);
+                    }else{
+                        System.out.println(failure);
                     }
                 });
 
@@ -109,7 +127,8 @@ public class IntegrationService {
                 .post()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
-                .body(Mono.just(List.of(body)), new ParameterizedTypeReference<>() {})
+                .body(Mono.just(List.of(body)), new ParameterizedTypeReference<>() {
+                })
                 .retrieve()
                 .bodyToMono(String.class) // TODO map answer
                 .subscribe(onSuccess, onFailure);

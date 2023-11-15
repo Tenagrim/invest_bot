@@ -40,7 +40,8 @@ create table TG_USER(
         FIRST_NAME varchar(255),
         USER_NAME varchar(255),
         LANGUAGE_CODE varchar(5),
-        IS_BOT boolean
+        IS_BOT boolean,
+        START_ARG varchar(255)
 );
 
 create table CONTACT_TYPE(

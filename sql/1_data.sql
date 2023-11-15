@@ -30,6 +30,7 @@ insert into INTEGRATION_CREDENTIAL_TYPE(id, sysname, description) values (3, 'AP
 insert into INTEGRATION_CREDENTIAL_TYPE(id, sysname, description) values (4, 'CLIENT_ID', 'client id');
 insert into INTEGRATION_CREDENTIAL_TYPE(id, sysname, description) values (5, 'CLIENT_SECRET', 'client secret');
 insert into INTEGRATION_CREDENTIAL_TYPE(id, sysname, description) values (6, 'REDIRECT_URI', 'redirect uri');
+insert into INTEGRATION_CREDENTIAL_TYPE(id, sysname, description) values (7, 'UTM_SOURCE_FIELD_ID', 'utm source field id');
 
 insert into bot_config_version(id) values (1);
 insert into data_version(id, bot_config_version_id, note ) values (1, 1,  'Версия 1');
