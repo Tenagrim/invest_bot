@@ -156,6 +156,7 @@ create sequence paragraph_id_seq start 1000;
 create table PARAGRAPH(
       ID   bigint NOT NULL DEFAULT nextval('paragraph_id_seq') primary key,
       TEXT text,
+      NOTE varchar(255),
       PLACEMENT integer not null default 0,
       CHAPTER_ID bigint references CHAPTER (ID),
       PARAGRAPH_TYPE_ID bigint references PARAGRAPH_TYPE (ID) not null default 1,

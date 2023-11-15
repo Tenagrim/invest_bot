@@ -1,5 +1,6 @@
 package com.tenagrim.telegram.bot;
 
+import com.tenagrim.telegram.dto.CallbackQueryData;
 import com.tenagrim.telegram.dto.integration.amocrm.*;
 import com.tenagrim.telegram.dto.integration.amocrm.auth.AccessTokenResponse;
 import com.tenagrim.telegram.dto.integration.amocrm.auth.RefreshAccessTokenRequest;
@@ -7,14 +8,12 @@ import com.tenagrim.telegram.enums.AmoCrmGrantType;
 import com.tenagrim.telegram.exception.NotFoundException;
 import com.tenagrim.telegram.model.TGUser;
 import com.tenagrim.telegram.model.chapter.Chapter;
+import com.tenagrim.telegram.model.chapter.Paragraph;
 import com.tenagrim.telegram.model.config.BotConfig;
 import com.tenagrim.telegram.model.integration.Integration;
 import com.tenagrim.telegram.model.integration.IntegrationQueueRecord;
 import com.tenagrim.telegram.model.integration.IntegrationTrigger;
-import com.tenagrim.telegram.repository.BotConfigRepository;
-import com.tenagrim.telegram.repository.ChapterRepository;
-import com.tenagrim.telegram.repository.IntegrationQueueRepository;
-import com.tenagrim.telegram.repository.TGUserRepository;
+import com.tenagrim.telegram.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -44,15 +43,16 @@ public class IntegrationService {
 
     private final IntegrationQueueRepository queueRepository;
     private final ChapterRepository chapterRepository;
+    private final ParagraphRepository paragraphRepository;
     private final BotConfigRepository botConfigRepository;
     private final TGUserRepository tgUserRepository;
 
-    public void pushRecords(BotConfig botConfig, Chapter chapter, Long userId) {
+    public void pushRecords(BotConfig botConfig, Chapter chapter, Long userId, CallbackQueryData callbackQueryData) {
         for (IntegrationTrigger t : chapter.getIntegrationTriggers()) {
             if (botConfig.getIntegrations().stream().allMatch(i -> Objects.equals(i.getTypeId(), t.getIntegrationTypeId()))) {
                 queueRepository.save(IntegrationQueueRecord.builder()
                         .userId(userId)
-                        .chapterId(chapter.getItemId())
+                        .chapterId(callbackQueryData.getFrom())
                         .integrationTypeId(t.getIntegrationTypeId())
                         .actual(true)
                         .build());
@@ -76,11 +76,13 @@ public class IntegrationService {
 
     private void sendToAmo(BotConfig botConfig, Integration amoIntegration, IntegrationQueueRecord record, User user, Contact contact) {
         // TODO save name in queue
-        Chapter forwardedChapter = chapterRepository.findByItemIdAndDataVersionId(record.getChapterId(), botConfig.getCurrentVersion().getId()).orElseThrow();
+//        Chapter forwardedChapter = chapterRepository.findByItemIdAndDataVersionId(record.getChapterId(), botConfig.getCurrentVersion().getId()).orElseThrow();
+        Optional<Paragraph> forwardedParagraph = paragraphRepository.findById(record.getChapterId());
         Optional<TGUser> tgUser = tgUserRepository.findByExternalId(record.getUserId());
 
+        String dealName = forwardedParagraph.map(Paragraph::getNote).orElse("UNKNOWN");
         AddLeadComplex addLeadComplex = AddLeadComplex.builder()
-                .name(forwardedChapter.getNote())
+                .name(dealName)
                 .customFieldValues((tgUser.isPresent() && tgUser.get().getStartArg() != null) ?
                         List.of(MainCustomFieldValue.builder()
                                 .fieldId(Integer.valueOf(amoIntegration.getCredential(UTM_SOURCE_FIELD_ID.getSysName())))

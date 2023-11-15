@@ -1,7 +1,11 @@
 package com.tenagrim.telegram.mappers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tenagrim.telegram.dto.CallbackQueryData;
 import com.tenagrim.telegram.model.chapter.*;
 import org.mapstruct.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -22,6 +26,9 @@ import java.util.stream.Stream;
 
 @Mapper(componentModel = "spring")
 public abstract class MessageMapper {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Value("${bot.attachements-path}")
     private String attachmentsFolder;
@@ -70,7 +77,15 @@ public abstract class MessageMapper {
         InlineKeyboardButton result = new InlineKeyboardButton();
         result.setText(action.getText());
         Long targetChapterId = action.getTargetChapterId() != null ? action.getTargetChapterId() : action.getParagraph().getChapter().getItemId();
-        result.setCallbackData(String.valueOf(targetChapterId));
+//        result.setCallbackData(String.valueOf(targetChapterId));
+        try {
+            result.setCallbackData(objectMapper.writeValueAsString(CallbackQueryData.builder()
+                    .id(targetChapterId)
+                    .from(action.getParagraph().getId())
+                    .build()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         return result;
     }
 

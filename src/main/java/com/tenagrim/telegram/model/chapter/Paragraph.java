@@ -19,6 +19,9 @@ public class Paragraph {
     @Column(name = "TEXT")
     String text;
 
+    @Column(name = "NOTE")
+    String note;
+
     @Column(name = "PLACEMENT")
     Integer placement;
 

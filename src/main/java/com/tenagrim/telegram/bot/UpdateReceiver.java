@@ -1,5 +1,9 @@
 package com.tenagrim.telegram.bot;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tenagrim.telegram.dto.CallbackQueryData;
 import com.tenagrim.telegram.mappers.MessageMapper;
 import com.tenagrim.telegram.model.config.BotConfig;
 import com.tenagrim.telegram.model.chapter.Chapter;
@@ -37,6 +41,7 @@ public class UpdateReceiver {
     private final ChapterRepository chapterRepository;
     private final TGUserService tgUserService;
     private final IntegrationService integrationService;
+    private final ObjectMapper objectMapper;
 
     public List<PartialBotApiMethod<? extends Serializable>> handle(Update update, BotConfig botConfig) {
         // try-catch, чтобы при несуществующей команде просто возвращать пустой список
@@ -74,12 +79,13 @@ public class UpdateReceiver {
             } else if (update.hasCallbackQuery()) {
                 List<PartialBotApiMethod<? extends Serializable>> result = new ArrayList<>();
                 final CallbackQuery callbackQuery = update.getCallbackQuery();
-                Long chapterId =  Long.parseLong(callbackQuery.getData()); // TODO validation
+                CallbackQueryData callbackQueryData = objectMapper.readValue(callbackQuery.getData(), CallbackQueryData.class);
+                Long chapterId =  callbackQueryData.getId(); // TODO validation
                 final Long chatId = callbackQuery.getFrom().getId();
                 Chapter chapter = chapterRepository.findByItemIdAndDataVersionId(chapterId, botConfig.getCurrentVersion().getId())
                         .orElseThrow(UnsupportedOperationException::new);
                 if (!chapter.getIntegrationTriggers().isEmpty()){
-                    integrationService.pushRecords(botConfig, chapter, chatId);
+                    integrationService.pushRecords(botConfig, chapter, chatId, callbackQueryData);
                 }
                 if (chapter.getItemId() == 4L){ // ToDO: switch to typed actions
                     List<PartialBotApiMethod<? extends Serializable>> to_send = sendMessageMapper.map(chapter, chatId.toString());
@@ -100,6 +106,10 @@ public class UpdateReceiver {
             throw new UnsupportedOperationException();
         } catch (UnsupportedOperationException e) {
             return Collections.emptyList();
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
