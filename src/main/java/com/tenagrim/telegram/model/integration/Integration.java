@@ -1,8 +1,6 @@
 package com.tenagrim.telegram.model.integration;
 
-import com.tenagrim.telegram.model.config.BotConfigPropertyValue;
-import lombok.Getter;
-import lombok.Setter;
+import com.tenagrim.telegram.exception.NotFoundException;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -15,7 +13,7 @@ public class Integration {
     @Id
     private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "INTEGRATION_ID", referencedColumnName = "ID")
     Set<IntegrationCredential> credentials;
 
@@ -26,11 +24,21 @@ public class Integration {
     private Map<String, String> credentialsMapCache; // TODO: should not be in entity class
 
     public Map<String, String> getcredentialsMap(){ // TODO: should not be in entity class
-        if (credentialsMapCache == null){
+        if (credentialsMapCache == null || credentialsMapCache.isEmpty()){
             credentialsMapCache = credentials.stream()
                     .collect(Collectors.toMap(el-> el.getType().sysName, IntegrationCredential::getValue));
         }
         return credentialsMapCache;
+    }
+    public void clearCache(){
+        credentialsMapCache.clear();
+    }
+
+    public String getCredential(String key){
+        if (!getcredentialsMap().containsKey(key)){
+            throw new NotFoundException(String.format("Credential %s was not found for integration", key));
+        }
+        return getcredentialsMap().get(key);
     }
 
     public Long getId() {

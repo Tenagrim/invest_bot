@@ -40,7 +40,7 @@ public class BotConfig {
     @JoinColumn(name = "BOT_CONFIG_ID", referencedColumnName = "ID")
     Set<BotConfigPropertyValue> configProperties;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "BOT_CONFIG_ID", referencedColumnName = "ID")
     Set<Integration> integrations;
 

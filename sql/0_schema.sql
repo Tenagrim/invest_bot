@@ -202,7 +202,8 @@ create table INTEGRATION_TYPE(
 create table INTEGRATION_CREDENTIAL_TYPE(
      ID bigserial primary key,
      SYSNAME varchar(50),
-     DESCRIPTION varchar(100)
+     DESCRIPTION varchar(100),
+     UNIQUE (SYSNAME)
 );
 
 create table INTEGRATION(

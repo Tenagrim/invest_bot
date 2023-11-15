@@ -10,9 +10,15 @@ public enum IntegrationCredentialType {
     REFRESH_TOKEN(2L, "REFRESH_TOKEN", ""),
     API_URL(3L, "API_URL", ""),
     CLIENT_ID(4L, "CLIENT_ID", ""),
-    CLIENT_SECRET(5L, "CLIENT_SECRET", "");
+    CLIENT_SECRET(5L, "CLIENT_SECRET", ""),
+    REDIRECT_URI(6L, "REDIRECT_URI", "");
 
     private final Long id;
     private final String sysName;
     private final String description;
+
+    @Override
+    public String toString() {
+        return sysName;
+    }
 }
