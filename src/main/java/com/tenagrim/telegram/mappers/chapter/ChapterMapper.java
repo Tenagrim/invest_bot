@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {
-        ChapterButtonMapper.class,
         AttachementMapper.class,
         NodePositionMapper.class,
         ParagraphMapper.class
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 public abstract class ChapterMapper {
 
     @Mapping(target = "id", ignore = true)
-//    @Mapping(target = "chapterButtons", qualifiedByName = "mapChapterButtons")
     @Mapping(target = "attachments", qualifiedByName = "mapChapterAttachements")
     @Mapping(target = "chapterParagraphs", qualifiedByName = "mapChapterParagraphs")
     abstract Chapter mapInternal(Chapter chapter);

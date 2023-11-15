@@ -35,6 +35,7 @@ public class UpdateReceiver {
     private final MessageMapper sendMessageMapper;
     private final ChapterRepository chapterRepository;
     private final TGUserService tgUserService;
+    private final IntegrationService integrationService;
 
     public List<PartialBotApiMethod<? extends Serializable>> handle(Update update, BotConfig botConfig) {
         // try-catch, чтобы при несуществующей команде просто возвращать пустой список
@@ -44,6 +45,7 @@ public class UpdateReceiver {
                 final Message message = update.getMessage();
                 final Long chatId = message.getFrom().getId();
                 tgUserService.addContact(message.getFrom(), message.getContact());
+                integrationService.sendContact(botConfig,message.getFrom(), message.getContact());
                 return List.of(getContactReply(chatId.toString()));
             } else if (isMessageWithText(update)) {
                 // Получаем Message из Update
@@ -65,6 +67,9 @@ public class UpdateReceiver {
                 final Long chatId = callbackQuery.getFrom().getId();
                 Chapter chapter = chapterRepository.findByItemIdAndDataVersionId(chapterId, botConfig.getCurrentVersion().getId())
                         .orElseThrow(UnsupportedOperationException::new);
+                if (!chapter.getIntegrationTriggers().isEmpty()){
+                    integrationService.pushRecords(botConfig, chapter, chatId);
+                }
                 if (chapter.getItemId() == 4L){ // ToDO: switch to typed actions
                     List<PartialBotApiMethod<? extends Serializable>> to_send = sendMessageMapper.map(chapter, chatId.toString());
                     SendMessage sendMessage = (SendMessage) to_send.get(0);
@@ -75,7 +80,7 @@ public class UpdateReceiver {
                     sendMessage.setReplyMarkup(replyKeyboard);
                     sendMessage.setChatId(chatId.toString());
                     result.add(sendMessage);
-                }else{
+                } else{
                     result.addAll(sendMessageMapper.map(chapter, callbackQuery, botConfig.getBotConfigProperties()));
                 }
 

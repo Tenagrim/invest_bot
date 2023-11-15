@@ -2,6 +2,7 @@ package com.tenagrim.telegram.model.config;
 
 import com.tenagrim.telegram.model.DataVersion;
 import com.tenagrim.telegram.model.chapter.ChapterMark;
+import com.tenagrim.telegram.model.integration.Integration;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -39,10 +40,12 @@ public class BotConfig {
     @JoinColumn(name = "BOT_CONFIG_ID", referencedColumnName = "ID")
     Set<BotConfigPropertyValue> configProperties;
 
-
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "BOT_CONFIG_ID", referencedColumnName = "ID")
+    Set<Integration> integrations;
 
     @Transient
-    private Map<String, Object> botConfigPropertiesCache;
+    private Map<String, Object> botConfigPropertiesCache; // TODO: should not be in entity class
 
     public Map<String, Object> getBotConfigProperties(){ // TODO: should not be in entity class
         if (botConfigPropertiesCache == null){
@@ -81,5 +84,9 @@ public class BotConfig {
 
     public Set<BotConfigPropertyValue> getConfigProperties() {
         return configProperties;
+    }
+
+    public Set<Integration> getIntegrations() {
+        return integrations;
     }
 }

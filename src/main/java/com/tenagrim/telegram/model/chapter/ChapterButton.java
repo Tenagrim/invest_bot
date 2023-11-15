@@ -18,9 +18,6 @@ public class ChapterButton {
     @Column(name = "TEXT")
     private String text;
 
-//    @Column(name = "CHAPTER_ID")
-//    Long chapterId;
-
     @Column(name = "TARGET_CHAPTER_ID")
     private Long targetChapterId;
 

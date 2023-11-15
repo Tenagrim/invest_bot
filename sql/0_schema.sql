@@ -188,7 +188,49 @@ create table ATTACHMENT
 );
 
 create table COMMAND(
-                        ID bigserial primary key,
-                        TEXT varchar(50) unique,
-                        CHAPTER_ID bigint references CHAPTER (ID)
+    ID bigserial primary key,
+    TEXT varchar(50) unique,
+    CHAPTER_ID bigint references CHAPTER (ID)
+);
+
+create table INTEGRATION_TYPE(
+     ID bigserial primary key,
+     SYSNAME varchar(50),
+     DESCRIPTION varchar(100)
+);
+
+create table INTEGRATION_CREDENTIAL_TYPE(
+     ID bigserial primary key,
+     SYSNAME varchar(50),
+     DESCRIPTION varchar(100)
+);
+
+create table INTEGRATION(
+    ID bigserial primary key,
+    BOT_CONFIG_ID bigint references BOT_CONFIG(ID),
+    INTEGRATION_TYPE_ID bigint references INTEGRATION_TYPE(ID),
+    UNIQUE (BOT_CONFIG_ID, INTEGRATION_TYPE_ID)
+);
+
+create table INTEGRATION_CREDENTIAL(
+   ID bigserial primary key,
+   INTEGRATION_CREDENTIAL_TYPE_ID bigint references INTEGRATION_CREDENTIAL_TYPE(ID),
+   INTEGRATION_ID bigint references INTEGRATION(ID),
+   VALUE text
+);
+
+create table INTEGRATION_TRIGGER(
+    ID bigserial primary key,
+    CHAPTER_ID bigint references CHAPTER(ID),
+    INTEGRATION_TYPE_ID bigint references INTEGRATION_TYPE(ID),
+    UNIQUE (CHAPTER_ID, INTEGRATION_TYPE_ID)
+);
+
+create table INTEGRATION_QUEUE(
+    ID bigserial primary key,
+    CREATE_DATE timestamp not null default now(),
+    ACTUAL boolean not null default true,
+    USER_ID bigint not null,
+    INTEGRATION_TYPE_ID bigint not null references INTEGRATION_TYPE(ID),
+    CHAPTER_ID bigint not null
 );

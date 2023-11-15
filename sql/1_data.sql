@@ -23,6 +23,12 @@ insert into attachment_type(id, sysname, description) values (1, 'IMAGE', 'image
 insert into attachment_type(id, sysname, description) values (2, 'DOCUMENT', 'document');
 insert into keyboard_type(id, sysname, description) values (1, 'INLINE', 'inline');
 insert into keyboard_type(id, sysname, description) values (2, 'STATIC', 'static');
+insert into integration_type(id, sysname, description) values (1, 'AMOCRM', 'amoCRM');
+insert into INTEGRATION_CREDENTIAL_TYPE(id, sysname, description) values (1, 'JWT_TOKEN', 'access_token');
+insert into INTEGRATION_CREDENTIAL_TYPE(id, sysname, description) values (2, 'REFRESH_TOKEN', 'refresh_token');
+insert into INTEGRATION_CREDENTIAL_TYPE(id, sysname, description) values (3, 'API_URL', 'api url');
+insert into INTEGRATION_CREDENTIAL_TYPE(id, sysname, description) values (4, 'CLIENT_ID', 'client id');
+insert into INTEGRATION_CREDENTIAL_TYPE(id, sysname, description) values (5, 'CLIENT_SECRET', 'client secret');
 
 insert into bot_config_version(id) values (1);
 insert into data_version(id, bot_config_version_id, note ) values (1, 1,  'Версия 1');
