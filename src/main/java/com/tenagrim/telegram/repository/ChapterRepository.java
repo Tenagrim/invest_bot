@@ -1,6 +1,7 @@
 package com.tenagrim.telegram.repository;
 
 import com.tenagrim.telegram.model.chapter.Chapter;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ public interface ChapterRepository extends JpaRepository<Chapter, Long> {
 
     void deleteByItemIdAndDataVersionId(Long itemId,Long dataVersionId);
 
+    @Cacheable("chapter")
     Optional<Chapter> findByItemIdAndDataVersionId(Long itemId,Long dataVersionId);
 
     List<Chapter> findAllByDataVersionId(Long dataVersionId);

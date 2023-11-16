@@ -26,7 +26,6 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import reactor.core.publisher.Mono;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,7 +41,6 @@ import static com.tenagrim.telegram.enums.IntegrationType.AMO_CRM;
 public class IntegrationService {
 
     private final IntegrationQueueRepository queueRepository;
-    private final ChapterRepository chapterRepository;
     private final ParagraphRepository paragraphRepository;
     private final BotConfigRepository botConfigRepository;
     private final TGUserRepository tgUserRepository;
